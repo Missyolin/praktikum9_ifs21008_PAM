@@ -6,6 +6,7 @@ import com.ifs21008.lostfound.data.pref.dataStore
 import com.ifs21008.lostfound.data.remote.retrofit.ApiConfig
 import com.ifs21008.lostfound.data.remote.retrofit.IApiService
 import com.ifs21008.lostfound.data.repository.AuthRepository
+import com.ifs21008.lostfound.data.repository.LocalLostFoundRepository
 import com.ifs21008.lostfound.data.repository.LostFoundRepository
 import com.ifs21008.lostfound.data.repository.UserRepository
 import kotlinx.coroutines.flow.first
@@ -34,4 +35,7 @@ object Injection {
         return LostFoundRepository.getInstance(apiService)
     }
 
+    fun provideLocalLostFoundRepository(context: Context) : LocalLostFoundRepository{
+        return LocalLostFoundRepository.getInstance(context)
+    }
 }

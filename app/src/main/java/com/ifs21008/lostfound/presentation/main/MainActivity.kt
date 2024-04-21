@@ -81,6 +81,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
+//                R.id.mainMenuFavoriteLostFound -> {
+//                    openFavoriteLostFoundActivity()
+//                    true
+//                }
+
                 R.id.mainMenuLogout -> {
                     viewModel.logout()
                     openLoginActivity()
@@ -277,4 +282,11 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra(LostFoundManageActivity.KEY_IS_ADD, true)
         launcher.launch(intent)
     }
+
+//    private fun openFavoriteLostFoundActivity() {
+//        val intent = Intent (
+//            this@MainActivity
+//        )
+//        launcher.launch(intent)
+//    }
 }

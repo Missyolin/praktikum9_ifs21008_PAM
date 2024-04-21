@@ -26,6 +26,8 @@ class LostFoundDetailActivity : AppCompatActivity() {
     }
     private var isChanged: Boolean = false
 
+    private var isFavorite: Boolean = false
+
     private val launcher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -98,6 +100,7 @@ class LostFoundDetailActivity : AppCompatActivity() {
                 tvLostFoundDetailTitle.text = todo.title
                 tvLostFoundDetailDate.text = "Diposting pada: ${todo.createdAt}"
                 tvLostFoundDetailDesc.text = todo.description
+
 
                 cbLostFoundDetailIsFinished.isChecked = todo.isCompleted == 1
 
