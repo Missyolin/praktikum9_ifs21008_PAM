@@ -13,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.ifs18005.delcomtodo.data.remote.response.TodoResponse
+import com.ifs21008.lostfound.R
 import com.ifs21008.lostfound.data.model.LostFound
 import com.ifs21008.lostfound.data.remote.MyResult
 import com.ifs21008.lostfound.databinding.ActivityLostfoundDetailBinding
@@ -25,8 +26,6 @@ class LostFoundDetailActivity : AppCompatActivity() {
         ViewModelFactory.getInstance(this)
     }
     private var isChanged: Boolean = false
-
-    private var isFavorite: Boolean = false
 
     private val launcher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -101,7 +100,6 @@ class LostFoundDetailActivity : AppCompatActivity() {
                 tvLostFoundDetailDate.text = "Diposting pada: ${todo.createdAt}"
                 tvLostFoundDetailDesc.text = todo.description
 
-
                 cbLostFoundDetailIsFinished.isChecked = todo.isCompleted == 1
 
                 val statusText = if (todo.status.equals("found", ignoreCase = true)) {
@@ -163,6 +161,78 @@ class LostFoundDetailActivity : AppCompatActivity() {
                         }
                     }
                 }
+
+                var isFavorite = false
+
+                binding.ivLostFoundDetailActionFavorite.setOnClickListener {
+                    isFavorite = !isFavorite
+                    if (isFavorite) {
+                        binding.ivLostFoundDetailActionFavorite.setImageResource(R.drawable.ic_favorite_24)
+                        Toast.makeText(
+                            this@LostFoundDetailActivity,
+                            "Item berhasil ditambahkan ke favorite",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        binding.ivLostFoundDetailActionFavorite.setImageResource(R.drawable.ic_favorite_border_24)
+                        Toast.makeText(
+                            this@LostFoundDetailActivity,
+                            "Item berhasil dikeluarkan dari favorite",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                cbLostFoundDetailIsFinished.setOnCheckedChangeListener { _, isChecked ->
+                    viewModel.putLostFound(
+                        todo.id,
+                        todo.title,
+                        todo.description,
+                        todo.status,
+                        isChecked
+                    ).observeOnce {
+                        when (it) {
+                            is MyResult.Error -> {
+                                if (isChecked) {
+                                    Toast.makeText(
+                                        this@LostFoundDetailActivity,
+                                        "Gagal menyelesaikan todo: " + todo.title,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    Toast.makeText(
+                                        this@LostFoundDetailActivity,
+                                        "Gagal batal menyelesaikan todo: " + todo.title,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+
+                            is MyResult.Success -> {
+                                if (isChecked) {
+                                    Toast.makeText(
+                                        this@LostFoundDetailActivity,
+                                        "Item Lost and Found " + todo.title + "berhasil diselesaikan",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    Toast.makeText(
+                                        this@LostFoundDetailActivity,
+                                        "Batal menyelesaikan item" + todo.title,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+
+                                if ((todo.isCompleted == 1) != isChecked) {
+                                    isChanged = true
+                                }
+                            }
+
+                            else -> {}
+                        }
+                    }
+                }
+
 
                 ivLostFoundDetailActionDelete.setOnClickListener {
                     val builder = AlertDialog.Builder(this@LostFoundDetailActivity)
